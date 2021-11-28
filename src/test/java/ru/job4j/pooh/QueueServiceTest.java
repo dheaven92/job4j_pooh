@@ -67,4 +67,14 @@ public class QueueServiceTest {
         assertThat(result2.text(), is(paramForPostMethod2));
         assertThat(result2.status(), is("200"));
     }
+
+    @Test
+    public void whenUnsupportedHttpMethodCall() {
+        QueueService queueService = new QueueService();
+        Resp result = queueService.process(
+                new Req("PUT", "queue", "weather", "temperature=18")
+        );
+        assertThat(result.text(), is(""));
+        assertThat(result.status(), is("405"));
+    }
 }

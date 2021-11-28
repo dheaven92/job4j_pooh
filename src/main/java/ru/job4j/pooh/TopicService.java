@@ -20,13 +20,16 @@ public class TopicService implements Service {
                 return new Resp("", HTTP_CODE_NO_CONTENT);
             }
         }
-        ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> clients = topics.get(req.getSourceName());
-        if (clients == null) {
-            return new Resp("", HTTP_CODE_NOT_FOUND);
+        if (HTTP_REQUEST_POST.equals(req.getHttpRequestType())) {
+            ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> clients = topics.get(req.getSourceName());
+            if (clients == null) {
+                return new Resp("", HTTP_CODE_NOT_FOUND);
+            }
+            for (ConcurrentLinkedQueue<String> queue : clients.values()) {
+                queue.add(req.getParam());
+            }
+            return new Resp(req.getParam(), HTTP_CODE_SUCCESS);
         }
-        for (ConcurrentLinkedQueue<String> queue : clients.values()) {
-            queue.add(req.getParam());
-        }
-        return new Resp(req.getParam() + " was added to topic " + req.getSourceName(), HTTP_CODE_SUCCESS);
+        return new Resp("", HTTP_CODE_METHOD_NOT_ALLOWED);
     }
 }

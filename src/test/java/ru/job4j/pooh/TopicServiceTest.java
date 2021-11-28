@@ -48,4 +48,17 @@ public class TopicServiceTest {
         assertThat(result.text(), is(""));
         assertThat(result.status(), is("404"));
     }
+
+    @Test
+    public void whenUnsupportedHttpMethodCall() {
+        TopicService topicService = new TopicService();
+        topicService.process(
+                new Req("GET", "topic", "weather", "client407")
+        );
+        Resp result = topicService.process(
+                new Req("PUT", "topic", "weather", "temperature=18")
+        );
+        assertThat(result.text(), is(""));
+        assertThat(result.status(), is("405"));
+    }
 }
